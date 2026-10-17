@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout the control plane's default branch, never the PR
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ vars.FOUNDRY_CONTROL_PLANE || github.repository }}
           ref: ${{ vars.FOUNDRY_CONTROL_PLANE == '' && github.event.repository.default_branch || '' }}
