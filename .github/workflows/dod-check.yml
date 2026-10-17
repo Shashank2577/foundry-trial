@@ -13,11 +13,11 @@ jobs:
     name: dod
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Fetch the DoD check from the control plane (pinned — #246)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: Shashank2577/ai-sdlc
           ref: 3aff6ae6bbad1fdd634f745c80d0fa56cde21a82
