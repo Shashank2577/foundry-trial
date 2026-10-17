@@ -1,0 +1,40 @@
+# Installed by foundry-init (#323). It finds the product's build and runs its
+# tests, so an agent's PR has a red or green to answer to from day one.
+# Replace it with the product's own pipeline once there is one; foundry-init
+# never overwrites a file that differs from this.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect the build and run its tests
+        run: |
+          set -euo pipefail
+          if [ -f package.json ]; then
+            npm ci || npm install
+            npm test
+          elif [ -f pyproject.toml ] || [ -f requirements.txt ]; then
+            python3 -m pip install --quiet pytest
+            if [ -f requirements.txt ]; then python3 -m pip install --quiet -r requirements.txt; fi
+            if [ -f pyproject.toml ]; then python3 -m pip install --quiet -e .; fi
+            python3 -m pytest
+          elif [ -f go.mod ]; then
+            go test ./...
+          elif [ -f Cargo.toml ]; then
+            cargo test
+          elif [ -f Makefile ] && grep -q '^test:' Makefile; then
+            make test
+          else
+            echo "::notice::No build found yet (package.json, pyproject.toml, requirements.txt, go.mod, Cargo.toml or a Makefile test target). The first story should add one."
+          fi
